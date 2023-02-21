@@ -1,0 +1,50 @@
+maker:
+  spawn:
+    type: DIAMOND_SWORD
+    name: "&eSpawn del parkour"
+    lore:
+     - "&7Click derecho para setear spawn"
+  start:
+    type: WOODEN_SWORD
+    name: "&eInicio del parkour"
+    lore:
+     - "&7Debe ser una placa de presion"
+  end:
+    type: STONE_SWORD
+    name: "&eFin del parkour"
+    lore:
+     - "&7Debe ser una placa de presion"  
+  cancel:
+    type: REDSTONE_BLOCK
+    name: "&cCancelar"
+    lore:
+     - "&7Click derecho para cancelar"
+  save:
+    type: SLIME_BLOCK
+    name: "&aGuardar"
+    lore:
+     - "&7Click derecho para guardar" 
+  checkpoint:
+    add:
+      type: IRON_SWORD
+      name: "&eAñadir checkpoint"
+      lore:
+       - "&7Click derecho para añadir checkpoint"
+    remove:
+      type: DIAMOND_SWORD
+      name: "&cRemover checkpoint"
+      lore:
+       - "&7Click derecho para remover checkpoint"
+       
+       
+game:
+  restart:
+    type: YELLOW_CARPET
+    name: "&eReiniciar"
+    lore:
+     - "&7Click derecho para reiniciar parkour"
+  checkpoint:
+    type: WHITE_CARPET
+    name: "&eUltimo Checkpoint"
+    lore:
+     - "&7Click derecho para ir a ultimo checkpoint"   

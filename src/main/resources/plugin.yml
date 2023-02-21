@@ -1,0 +1,8 @@
+name: Parkour
+main: me.nicomunoz.kiroscraft.parkour.bukkit.Main
+version: 1.0
+author: XelfeGamer
+description: ""
+api-version: 1.19
+commands:
+  pmaker:
