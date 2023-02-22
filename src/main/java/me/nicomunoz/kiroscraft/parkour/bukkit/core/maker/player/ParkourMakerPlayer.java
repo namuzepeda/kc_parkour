@@ -9,8 +9,15 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.ParkourMakerArena;
 
 public class ParkourMakerPlayer {
 	
+	public enum SetupMode {
+		
+		CREATE, EDIT;
+		
+	}
+	
 	private UUID playerUUID;
 	private ParkourMakerArena makerArena;
+	private SetupMode setupMode;
 	
 	public ParkourMakerPlayer(UUID playerUUID) {
 		this.playerUUID = playerUUID;
@@ -34,6 +41,14 @@ public class ParkourMakerPlayer {
 	
 	public ParkourMakerArena getArena() {
 		return this.makerArena;
+	}
+
+	public SetupMode getSetupMode() {
+		return setupMode;
+	}
+
+	public void setSetupMode(SetupMode setupMode) {
+		this.setupMode = setupMode;
 	}
 
 }

@@ -1,3 +1,18 @@
+join:
+  games:
+    type: CAKE
+    name: §eArenas
+    lore:
+      - ""
+      - §7Click derecho para ver arenas disponibles
+  ranks:
+    type: EMERALD
+    name: §eRangos
+    lore:
+      - ""
+      - §7Click derecho para ver tienda de rangos
+
+
 maker:
   spawn:
     type: DIAMOND_SWORD

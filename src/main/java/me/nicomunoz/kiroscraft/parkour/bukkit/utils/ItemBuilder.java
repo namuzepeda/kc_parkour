@@ -157,6 +157,12 @@ public class ItemBuilder {
         make().setItemMeta(meta());
         return this;
     }
+    
+    public ItemBuilder lores(List<String> lore) {
+    	meta().setLore(lore);
+    	make().setItemMeta(meta());
+    	return this;
+    }
 
     /**
      * Changes the durability of the current {@link ItemStack}

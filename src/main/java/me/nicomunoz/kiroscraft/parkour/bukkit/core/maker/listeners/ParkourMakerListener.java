@@ -3,22 +3,23 @@ package me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.listeners;
 import java.io.IOException;
 
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.ParkourArena;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.items.ParkourView;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.ParkourMakerArena;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCancelEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCheckpointAddEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCheckpointRemoveEvent;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerEditEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerEndEvent;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerFinishEvent;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerDoneEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSaveEvent;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSetupCreateEvent;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSetupEditEvent;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSetupEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSpawnEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerStartEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.player.ParkourMakerPlayer;
@@ -29,12 +30,27 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.items.view.ItemView
 public class ParkourMakerListener implements Listener {
 	
 	@EventHandler
-	public void onMakerEditEvent(ParkourMakerEditEvent event) {
-		ParkourMakerPlayer makerPlayer = event.getMakerPlayer();
-		event.getPlayer().closeInventory();
-		makerPlayer.setArena(new ParkourMakerArena(event.getMode()));
+	public void onMakerSetupEvent(ParkourMakerSetupEvent event) {
+		Player player = event.getPlayer();
+		player.closeInventory();
 		ItemView.setView(event.getPlayer(), ParkourView.MAKER);
-		Message.key(ParkourProperties.MAKER_EVENT_EDIT_START, event.getPlayer());
+		event.getMakerArena().setMode(event.getMode());
+	}
+	
+	@EventHandler
+	public void onMakerCreateEvent(ParkourMakerSetupCreateEvent event) {
+		Message.key(ParkourProperties.MAKER_EVENT_CREATE, event.getPlayer(), 
+				"%arena", event.getMakerArena().getName(),
+				"%mode", event.getMode().name()
+		);
+	}
+	
+	@EventHandler
+	public void onMakerEditEvent(ParkourMakerSetupEditEvent event) {
+		Message.key(ParkourProperties.MAKER_EVENT_EDIT_START, event.getPlayer(),
+				"%arena", event.getMakerArena().getName(),
+				"%mode", event.getMode().name()
+		);
 	}
 	
 	@EventHandler
@@ -97,31 +113,28 @@ public class ParkourMakerListener implements Listener {
 	public void onMakerSaveEvent(ParkourMakerSaveEvent event) {
 		ParkourMakerArena arena = event.getMakerPlayer().getArena();
 		FileConfiguration config = ParkourCore.getInstance().getConfigManager().getArena().getConfig();
-		config.set("start", arena.getStart());
-		config.set("end", arena.getEnd());
-		config.set("spawn", arena.getSpawn());
+		String name = arena.getName().toLowerCase();
+		config.set(name +  ".start", arena.getStart());
+		config.set(name + ".end", arena.getEnd());
+		config.set(name + ".spawn", arena.getSpawn());
+		config.set(name + ".mode", arena.getMode().name());
 		for(int i = 0; arena.getCheckpoints().size() > i; i++) {
-			config.set("checkpoints." + i, arena.getCheckpoints().get(i));
+			config.set(name + ".checkpoints", arena.getCheckpoints());
 		}
 		ParkourCore.getInstance().getConfigManager().getArena().saveConfig();
-		Message.key(ParkourProperties.MAKER_EVENT_EDIT_SAVE, event.getPlayer());
-		ParkourCore.getInstance().getProperties().setValue(ParkourProperties.PARKOUR_MODE, event.getMakerPlayer().getArena().getMode().name());
-		try {
-			ParkourCore.getInstance().getProperties().save();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Message.key(ParkourProperties.MAKER_EVENT_EDIT_DONE, event.getPlayer());
 	}
 	
 	@EventHandler
 	public void onMakerCancelEvent(ParkourMakerCancelEvent event) {
-		ItemView.restore(event.getPlayer());
-		ParkourCore.getInstance().getMakerManager().getPlayerManager().deleteInstance(event.getPlayer());
+		ParkourMakerPlayer makerPlayer = event.getMakerPlayer();
+		makerPlayer.setArena(null);
+		makerPlayer.setSetupMode(null);
 		Message.key(ParkourProperties.MAKER_EVENT_EDIT_CANCEL, event.getPlayer());
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
-	public void onMakerFinishEditingEvent(ParkourMakerFinishEvent event) {
+	public void onMakerFinishEditingEvent(ParkourMakerDoneEvent event) {
 		ParkourCore.getInstance().getMakerManager().getPlayerManager().deleteInstance(event.getPlayer());
 		ItemView.restore(event.getPlayer());
 	}

@@ -21,7 +21,9 @@ public class Config {
 	}
 		
 	public static boolean asBoolean(String key) {
-		return Boolean.getBoolean(key);
+		String value = value(key);
+		System.out.println(value);
+		return Boolean.valueOf(value);
 	}
 	
 	private static String value(String key) {

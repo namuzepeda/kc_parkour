@@ -1,18 +1,22 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.ModeSelectorInventory;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.ParkourGame;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourState;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCancelEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.player.ParkourMakerPlayer;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.utils.ParkourPermission;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.utils.ParkourProperties;
@@ -23,6 +27,19 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.items.view.ItemView
 public class ParkourMakerPlayerListener implements Listener {
 	
 	@EventHandler
+	public void onInventoryCloseEvent(InventoryCloseEvent event) {
+		if(event.getView().getTopInventory().getHolder() instanceof ModeSelectorInventory) {
+			ParkourMakerPlayer makerPlayer = ParkourCore.getInstance().getMakerManager().getPlayerManager().getPlayer((Player) event.getPlayer());
+			if(makerPlayer != null) {
+				if(makerPlayer.getSetupMode() == null) {
+					ParkourMakerCancelEvent cancelEvent = new ParkourMakerCancelEvent((Player) event.getPlayer());
+					Bukkit.getPluginManager().callEvent(cancelEvent);
+				}
+			}
+		}
+	}
+	
+	/*@EventHandler
 	public void onPlayerJoinEvent(PlayerLoginEvent event) {
 		ParkourGame game = ParkourCore.getInstance().getGameManager().getGame();
 		if(game == null || game.getState() == ParkourState.BUILDING) {
@@ -32,6 +49,7 @@ public class ParkourMakerPlayerListener implements Listener {
 			}
 		}
 	}
+	*/
 	
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {

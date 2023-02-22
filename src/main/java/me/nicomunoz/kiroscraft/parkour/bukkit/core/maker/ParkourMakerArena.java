@@ -14,14 +14,19 @@ public class ParkourMakerArena {
 	private Location spawn;
 	private List<Location> checkpoints;
 	private ParkourMode mode;
+	private String name;
 	
-	public ParkourMakerArena(ParkourMode mode) {
+	public ParkourMakerArena(String name) {
 		this.checkpoints = new ArrayList<>();
-		this.mode = mode;
+		this.name = name;
 	}
 	
 	public ParkourMode getMode() {
 		return this.mode;
+	}
+	
+	public void setMode(ParkourMode mode) {
+		this.mode = mode;
 	}
 	
 	public Location getSpawn() {
@@ -50,6 +55,10 @@ public class ParkourMakerArena {
 
 	public List<Location> getCheckpoints() {
 		return checkpoints;
+	}
+	
+	public String getName() {
+		return this.name;
 	}
 
 }

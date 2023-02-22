@@ -6,23 +6,21 @@ import java.util.Set;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.ParkourArena;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.player.ParkourPlayer;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourGameImpl;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.timer.ParkourTimer;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourMode;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourState;
 
-public class ParkourGame implements ParkourGameImpl {
+public class ParkourGame {
 	
 	private Set<ParkourPlayer> players;
 	private Date start;
 	private Date finish;
-	private ParkourMode mode;
 	private ParkourState state;
 	private ParkourArena arena;
 	
-	public ParkourGame(ParkourArena arena, ParkourMode mode) {
+	public ParkourGame(ParkourArena arena) {
 		this.arena = arena;
 		this.players = new HashSet<>();
-		this.mode = mode;
 	}
 	
 	public Set<ParkourPlayer> getPlayers() {
@@ -43,10 +41,6 @@ public class ParkourGame implements ParkourGameImpl {
 
 	public void setFinish(Date finish) {
 		this.finish = finish;
-	}
-	
-	public ParkourMode getMode() {
-		return this.mode;
 	}
 	
 	public ParkourArena getArena() {

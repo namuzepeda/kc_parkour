@@ -1,0 +1,49 @@
+games:
+  title: §0Arenas
+  size: 27
+  items:
+    arena:
+      type: WHITE_CARPET
+      name: §e%arena
+      lore:
+       - '§7§m----------------------'
+       - ''
+       - '§7Jugadores: §e%players'
+       
+ranks:
+  title: §0Rangos
+  size: 9
+  items:
+    not_enough:
+      type: RED_TERRACOTTA
+      name: §e%rank
+      lore:
+       - '§7§m----------------------'
+       - ''
+       - '§7Prefijo: %prefix'
+       - ''
+       - '§e%price §7monedas'
+       - ''
+       - '§cNo tienes suficiente dinero'
+    buy:
+      type: GREEN_TERRACOTTA
+      name: §e%rank
+      lore:
+       - '§7§m----------------------'
+       - ''
+       - '§7Prefijo: %prefix'
+       - ''
+       - '§e%price §7monedas'
+       - ''
+       - '§aClick para comprar rango'
+    bought:
+      type: WHITE_TERRACOTTA
+      name: §e%rank
+      lore:
+       - '§7§m----------------------'
+       - ''
+       - '§7Prefijo: %prefix'
+       - ''
+       - '§e%price §7monedas'
+       - ''
+       - '§eYa tienes este rango'

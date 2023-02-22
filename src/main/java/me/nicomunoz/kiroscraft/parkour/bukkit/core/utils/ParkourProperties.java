@@ -10,10 +10,16 @@ public class ParkourProperties extends PropertiesHandler {
 	public ParkourProperties() throws IOException {
 		super(ParkourCore.getInstance().getMain(), "parkour");
 	}
+	
+	public static String ERROR = "error";
 
 	public static String NOT_PLAYER = "not_player";
 	public static String NOT_PERMISSION = "not_permission";
 	
+	
+	public static String MAKER_NOT_EXIST = "maker.event.edit.not_exist";
+	public static String MAKER_ALREADY_EXISTS = "maker.event.create.already_exists";
+	public static String MAKER_EVENT_CREATE = "maker.event.create";
 	public static String MAKER_EVENT_EDIT_ALREADY_EDITING = "maker.event.edit.already_editing";
 	public static String MAKER_EVENT_EDIT_START = "maker.event.edit.start";
 	public static String MAKER_EVENT_EDIT_CANCEL = "maker.event.edit.cancel";
@@ -27,6 +33,18 @@ public class ParkourProperties extends PropertiesHandler {
 	public static String MAKER_EVENT_EDIT_NOT_CONTAINS_CHECKPOINT = "maker.event.edit.not_contains.checkpoint";
 	public static String MAKER_EVENT_EDIT_CANNOT_IF_CHECKPOINT = "maker.event.edit.cannot_if_checkpoint";
 	public static String MAKER_EVENT_EDIT_CANNOT_IF_START_END = "maker.event.edit.cannot_if_end_start";
+	public static String MAKER_EVENT_EDIT_CANNOT_IF_PLAYERS = "maker.event.edit.cannot_if_players";
+	public static String MAKER_EVENT_EDIT_DONE = "maker.event.edit.done";
+	
+	public static String RANK_SHOP_NO_MONEY = "rank.shop.no_money";
+	public static String RANK_SHOP_ALREADY_BOUGHT = "rank.shop.already_bought";
+	
+	public static String RANK_UP_SUCCESS = "rank.event.up";
+	
+	public static String RANK_FORMAT_DISPLAYNAME = "rank.format.displayname";
+	public static String RANK_FORMAT_TABLISTNAME = "rank.format.tablistname";
+	public static String RANK_CHAT_ENABLED = "rank.chat.enabled";
+	public static String RANK_CHAT_FORMAT = "rank.chat.format";
 	
 	public static String BROADCAST_ON_JOIN = "event.join.broadcast.enabled";
 	public static String BROADCAST_MESSAGE = "event.join.broadcast.message";
@@ -45,6 +63,8 @@ public class ParkourProperties extends PropertiesHandler {
 	public static String KICK_IF_BUILDING = "kick_if_building";
 	public static String KICK_BUILD_MSG = "kick_building_message";
 	
-	public static String CONFIG_FORCE_EDIT = "parkour.edit.force_if_players";;
+	public static String CONFIG_FORCE_EDIT = "parkour.edit.force_if_players";
+	
+	public static String ACTIONBAR_TIMER_UPDATE = "actionbar_timer.update_time";
 
 }

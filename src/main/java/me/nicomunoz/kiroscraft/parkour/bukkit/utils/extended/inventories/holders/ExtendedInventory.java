@@ -9,7 +9,7 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.inventories.actions
 
 public class ExtendedInventory extends ActionHolder implements InventoryHolder {
 	
-	private Inventory inventory;
+	protected Inventory inventory;
 	
 	public ExtendedInventory(String title, int size) {
 		inventory = Bukkit.createInventory(this, size, title);

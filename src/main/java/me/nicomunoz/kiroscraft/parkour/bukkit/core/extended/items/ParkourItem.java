@@ -1,5 +1,7 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.items;
 
+import java.sql.SQLException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -7,6 +9,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.RanksInventory;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayerRollbackEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayerRollbackEvent.RollbackMode;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.player.ParkourPlayer;
@@ -185,6 +188,32 @@ public enum ParkourItem implements ItemImpl {
 					if(parkourPlayer.getGame() != null) {
 						ParkourGamePlayerRollbackEvent restartEvent = new ParkourGamePlayerRollbackEvent(player, parkourPlayer.getGame(), RollbackMode.CHECKPOINT);
 						Bukkit.getServer().getPluginManager().callEvent(restartEvent);
+					}
+				}
+				
+			}
+	),
+	GAMES(
+			"join.games",
+			new ClickAction() {
+				
+				@Override
+				public void execute(Player player) {
+					player.openInventory(ParkourCore.getInstance().getGameManager().getGamesInventory().getInventory());
+				}
+				
+			}
+	),
+	RANKS(
+			"join.ranks",
+			new ClickAction() {
+			
+				@Override
+				public void execute(Player player) {
+					try {
+						player.openInventory(new RanksInventory(player.getName()).getInventory());
+					} catch (SQLException e) {
+						e.printStackTrace();
 					}
 				}
 				

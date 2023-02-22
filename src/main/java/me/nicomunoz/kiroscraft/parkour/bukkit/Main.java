@@ -1,6 +1,7 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -12,7 +13,7 @@ public class Main extends JavaPlugin {
 	public void onEnable() {
 		try {
 			ParkourCore.newInstance(this);
-		} catch (IOException e) {
+		} catch (IOException | SQLException e) {
 			e.printStackTrace();
 		}
 	}

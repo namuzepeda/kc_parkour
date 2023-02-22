@@ -1,5 +1,7 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.items;
 
+import org.bukkit.Material;
+
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.items.view.ItemViewElement;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.items.view.ItemViewImpl;
 
@@ -57,6 +59,16 @@ public enum ParkourView implements ItemViewImpl {
 			new ItemViewElement(
 					8,
 					ParkourItem.GAME_RESTART
+			)
+	),
+	JOIN(
+			new ItemViewElement(
+					0,
+					ParkourItem.GAMES
+			),
+			new ItemViewElement(
+					4,
+					ParkourItem.RANKS
 			)
 	);
 	

@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Novato",
+        "prefix": "§7[Novato]",
+        "price": 100,
+		"id": 1
+    },
+    {
+        "name": "Profesional",
+        "prefix": "§7[Profesional]",
+        "price": 150,
+		"id": 2
+    }
+]
