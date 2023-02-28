@@ -4,12 +4,16 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.event.Listener;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.ParkourArena;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.utils.ParkourArenaUtils;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.GamesInventory;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.GameModeSelectorInventory;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.modes.GamesModeCompetitiveInventory;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.modes.GamesModeDropperInventory;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.modes.GamesModeFreeInventory;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.listeners.ParkourGameListener;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.listeners.ParkourGamePlayerListener;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.listeners.ParkourGameServerListener;
@@ -32,7 +36,9 @@ public class ParkourGameManager {
 	private ParkourPlayerManager playerManager;
 	private HashMap<String, ParkourGame> games;
 	private ParkourTimer competitiveTimer;
-	private GamesInventory gamesInventory;
+	private GamesModeFreeInventory[] gamesModeInventory;
+	private GameModeSelectorInventory modeSelectorInventory;
+	private Location leaveLocation;
 	
 	public ParkourGameManager() {
 		this.playerManager = new ParkourPlayerManager();
@@ -42,7 +48,19 @@ public class ParkourGameManager {
 		for(Listener listener : listeners) {
 			Bukkit.getPluginManager().registerEvents(listener, ParkourCore.getInstance().getMain());
 		}
-		this.gamesInventory = new GamesInventory();
+		
+		this.modeSelectorInventory = new GameModeSelectorInventory();
+		
+		this.gamesModeInventory = new GamesModeFreeInventory[] {
+			new GamesModeFreeInventory(),
+			new GamesModeCompetitiveInventory(),
+			new GamesModeDropperInventory()
+		};
+		this.leaveLocation = ParkourCore.getInstance().getConfigManager().getArena().getConfig().getLocation("leave");
+	}
+	
+	public Location getLeaveLocation() {
+		return this.leaveLocation;
 	}
 	
 	private void loadGames() {
@@ -78,8 +96,12 @@ public class ParkourGameManager {
 		return this.games.values();
 	}
 	
-	public GamesInventory getGamesInventory() {
-		return this.gamesInventory;
+	public GameModeSelectorInventory getModeSelectorInventory() {
+		return this.modeSelectorInventory;
+	}
+	
+	public GamesModeFreeInventory getModeInventory(ParkourMode mode) {
+		return this.gamesModeInventory[mode.ordinal()];
 	}
 
 }

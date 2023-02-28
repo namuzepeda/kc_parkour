@@ -12,6 +12,7 @@ public class ParkourMakerArena {
 	private Location start;
 	private Location end;
 	private Location spawn;
+	private Location leaderboard;
 	private List<Location> checkpoints;
 	private ParkourMode mode;
 	private String name;
@@ -55,6 +56,14 @@ public class ParkourMakerArena {
 
 	public List<Location> getCheckpoints() {
 		return checkpoints;
+	}
+	
+	public Location getLeaderboard() {
+		return this.leaderboard;
+	}
+	
+	public void setLeaderboard(Location leaderboard) {
+		this.leaderboard = leaderboard;
 	}
 	
 	public String getName() {

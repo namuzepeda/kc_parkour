@@ -10,6 +10,7 @@ public class ParkourConfigManager {
 	private YamlConfig itemsConfig;
 	private YamlConfig arenaConfig;
 	private YamlConfig inventoriesConfig;
+	private YamlConfig miscelaneousConfig;
 	
 	public ParkourConfigManager() throws IOException {
 		this.itemsConfig = new YamlConfig(ParkourCore.getInstance().getMain(), "items.yml");
@@ -18,6 +19,8 @@ public class ParkourConfigManager {
 		this.arenaConfig.getConfig().options().copyDefaults(true);
 		this.inventoriesConfig = new YamlConfig(ParkourCore.getInstance().getMain(), "inventories.yml");
 		this.inventoriesConfig.getConfig().options().copyDefaults(true);
+		this.miscelaneousConfig = new YamlConfig(ParkourCore.getInstance().getMain(), "miscelaneous.yml");
+		this.miscelaneousConfig.getConfig().options().copyDefaults(true);
 	}
 	
 	public YamlConfig getItems() {
@@ -30,6 +33,10 @@ public class ParkourConfigManager {
 	
 	public YamlConfig getInventories() {
 		return this.inventoriesConfig;
+	}
+	
+	public YamlConfig getMiscelanousConfig() {
+		return this.miscelaneousConfig;
 	}
 
 }

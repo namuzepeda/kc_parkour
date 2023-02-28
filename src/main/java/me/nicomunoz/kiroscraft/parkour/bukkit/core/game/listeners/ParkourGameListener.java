@@ -1,11 +1,16 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.core.game.listeners;
 
+import java.sql.SQLException;
 import java.util.Date;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.checkpoint.ParkourCheckpoint;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.items.ParkourView;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.ParkourGame;
@@ -17,11 +22,13 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayer
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayerRollbackEvent.RollbackMode;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayerStartEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.player.ParkourPlayer;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourGameUtils;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourMode;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.utils.ParkourProperties;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.Config;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.Message;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.items.view.ItemView;
+import me.nicomunoz.kiroscraft.parkour.connection.Query;
 
 public class ParkourGameListener implements Listener {
 	
@@ -31,7 +38,7 @@ public class ParkourGameListener implements Listener {
 		
 		game.getPlayers().add(event.getParkourPlayer());
 		event.getParkourPlayer().setGame(game);
-		event.getPlayer().teleport(game.getArena().getSpawn());
+		event.getPlayer().teleport(event.getSpawn());
 		if(Config.asBoolean(ParkourProperties.BROADCAST_ON_JOIN)) {
 			Message.broadcast(ParkourProperties.BROADCAST_MESSAGE, null, 
 					"%player", event.getPlayer().getDisplayName()
@@ -45,6 +52,7 @@ public class ParkourGameListener implements Listener {
 		}
 		ItemView.setView(event.getPlayer(), 
 				game.getArena().getMode() == ParkourMode.FREE ? ParkourView.MODE_FREE : ParkourView.MODE_COMPETITIVE);
+		ParkourCore.getInstance().getGameManager().getModeInventory(game.getArena().getMode()).update();
 	}
 	
 	@EventHandler
@@ -88,24 +96,49 @@ public class ParkourGameListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onParkourGameDoneEvet(ParkourGamePlayerDoneEvent event) {
 		ParkourGame game = event.getGame();
 		Player player = event.getPlayer();
 		ParkourPlayer parkourPlayer = event.getParkourPlayer();
+		event.getPlayer().teleport(event.getGame().getArena().getSpawn());
 		game.getPlayers().remove(parkourPlayer);
 		parkourPlayer.setCheckpoint(null);
 		parkourPlayer.setStart(null);
 		parkourPlayer.setGame(null);
-		ItemView.restore(player);
-		event.getPlayer().teleport(event.getGame().getArena().getSpawn());
+		ItemView.setView(player, ParkourView.JOIN);
+		player.teleport(game.getArena().getLeave() != null ? game.getArena().getLeave() : game.getArena().getSpawn());
+		ParkourCore.getInstance().getGameManager().getModeInventory(game.getArena().getMode()).update();
 	}
 	
 	@EventHandler
 	public void onPlayerFinishEvent(ParkourGamePlayerFinishEvent event) {
 		Date finish = new Date();
+		ParkourGame game = event.getGame();
+		long time = finish.getTime() - event.getParkourPlayer().getStart().getTime();
+		String stringTime = ParkourGameUtils.getTime(finish.getTime() - event.getParkourPlayer().getStart().getTime());
 		Message.key(ParkourProperties.EVENT_FINISH_MSG, event.getPlayer(), 
-				"%time", (event.getParkourPlayer().getStart().getTime() - finish.getTime() / 1000) + "");
+				"%time", stringTime);
+		new BukkitRunnable() {
+			
+			@Override
+			public void run() {
+				try {
+					if(game.getArena().getMode() == ParkourMode.COMPETITIVE) {
+						new Query(null, "INSERT INTO map_player (map, player, time) VALUES (?, ?, ?) "
+								+ "ON DUPLICATE KEY UPDATE time = "
+								+ "LEAST(COALESCE(time, 999999999999), ?)", game.getArena().getName(),
+								event.getPlayer().getName(), time, time).executeUpdate();
+						game.getArena().getLeaderboard().update();
+					} else if(game.getArena().getMode() == ParkourMode.FREE) {
+						ParkourGameUtils.insertOrUpdateLocation(null, game.getArena(), event.getPlayer().getName());
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+		}.runTaskAsynchronously(ParkourCore.getInstance().getMain());
 	}
 
 }

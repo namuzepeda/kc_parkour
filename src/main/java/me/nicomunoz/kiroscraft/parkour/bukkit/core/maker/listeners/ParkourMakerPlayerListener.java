@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.ModeSelectorInventory;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.EditorModeSelectorInventory;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.ParkourGame;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourState;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCancelEvent;
@@ -28,7 +28,7 @@ public class ParkourMakerPlayerListener implements Listener {
 	
 	@EventHandler
 	public void onInventoryCloseEvent(InventoryCloseEvent event) {
-		if(event.getView().getTopInventory().getHolder() instanceof ModeSelectorInventory) {
+		if(event.getView().getTopInventory().getHolder() instanceof EditorModeSelectorInventory) {
 			ParkourMakerPlayer makerPlayer = ParkourCore.getInstance().getMakerManager().getPlayerManager().getPlayer((Player) event.getPlayer());
 			if(makerPlayer != null) {
 				if(makerPlayer.getSetupMode() == null) {

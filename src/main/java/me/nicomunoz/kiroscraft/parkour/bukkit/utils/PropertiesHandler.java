@@ -1,10 +1,12 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.utils;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,11 +26,12 @@ public class PropertiesHandler {
 		if(!file.exists()) {
 			file.createNewFile();
 			InputStream initialStream = plugin.getResource(name + ".properties");
-		    byte[] buffer = new byte[initialStream.available()];
+			byte[] buffer = new byte[initialStream.available()];
 		    initialStream.read(buffer);
-
-		    Files.write(buffer, file);
-		    initialStream.close();
+		    CharSequence cs = new String(buffer, StandardCharsets.UTF_8);
+		    BufferedWriter writer = Files.newWriter(file, StandardCharsets.UTF_8);
+		    writer.append(cs);
+		    writer.close();
 		}
 		FileInputStream inputStream = new FileInputStream(file);
 		data.load(inputStream);

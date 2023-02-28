@@ -1,6 +1,6 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.listeners;
 
-import java.io.IOException;
+import java.sql.SQLException;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -9,13 +9,15 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.ParkourArena;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.items.ParkourView;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.ParkourMakerArena;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCancelEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCheckpointAddEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCheckpointRemoveEvent;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerEndEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerDoneEvent;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerEndEvent;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerLeaderboardEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSaveEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSetupCreateEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSetupEditEvent;
@@ -72,6 +74,13 @@ public class ParkourMakerListener implements Listener {
 	}
 	
 	@EventHandler
+	public void onMakerLeaderboardSetEvent(ParkourMakerLeaderboardEvent event) {
+		ParkourMakerArena arena = event.getMakerPlayer().getArena();
+		arena.setLeaderboard(event.getLocation());
+		Message.key(ParkourProperties.MAKER_EVENT_EDIT_SET_LEADERBOARD, event.getPlayer());
+	}
+	
+	@EventHandler
 	public void onMakerStartEvent(ParkourMakerEndEvent event) {
 		ParkourMakerArena arena = event.getMakerPlayer().getArena();
 		if(arena.getCheckpoints().contains(event.getBlock().getLocation())) {
@@ -118,11 +127,20 @@ public class ParkourMakerListener implements Listener {
 		config.set(name + ".end", arena.getEnd());
 		config.set(name + ".spawn", arena.getSpawn());
 		config.set(name + ".mode", arena.getMode().name());
+		config.set(name + ".leaderboard", arena.getLeaderboard());
 		for(int i = 0; arena.getCheckpoints().size() > i; i++) {
 			config.set(name + ".checkpoints", arena.getCheckpoints());
 		}
 		ParkourCore.getInstance().getConfigManager().getArena().saveConfig();
 		Message.key(ParkourProperties.MAKER_EVENT_EDIT_DONE, event.getPlayer());
+		if(ParkourCore.getInstance().getArenaManager().exists(name))
+			ParkourCore.getInstance().getArenaManager().remove(name);
+		try {
+			ParkourArena parkourArena = ParkourCore.getInstance().getArenaManager().create(name);
+			ParkourCore.getInstance().getGameManager().getModeInventory(parkourArena.getMode()).update();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@EventHandler
@@ -136,7 +154,7 @@ public class ParkourMakerListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onMakerFinishEditingEvent(ParkourMakerDoneEvent event) {
 		ParkourCore.getInstance().getMakerManager().getPlayerManager().deleteInstance(event.getPlayer());
-		ItemView.restore(event.getPlayer());
+		ItemView.setView(event.getPlayer(), ParkourView.JOIN);
 	}
 
 }

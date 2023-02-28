@@ -7,10 +7,14 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+
+import com.github.juliarn.npc.NPC;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.ParkourArena;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.items.ParkourView;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.ParkourGame;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.ParkourMakerArena;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.player.ParkourMakerPlayer;
@@ -20,6 +24,7 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.utils.ParkourProperties;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.Config;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.Message;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.Permission;
+import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.items.view.ItemView;
 
 public class ParkourMakerCommand implements CommandExecutor {
 	
@@ -27,7 +32,9 @@ public class ParkourMakerCommand implements CommandExecutor {
 			"",
 			"§e/pmaker create <name> - Crear arena",
 			"§e/pmaker edit <arena>  -   Editar arena",
-			"§e/pmaker menu  -   Menu arenas",
+			"§e/pmaker npc <skin> - Setear NPC en ubicacion",
+			"§e/pmaker set leave - Setear ubicacion de salida",
+			"§e/pmaker build  -   Construir",
 			""
 	};
 	
@@ -80,13 +87,13 @@ public class ParkourMakerCommand implements CommandExecutor {
 			//Kickear jugadores
 		}
 		
-		ParkourArena arena = game.getArena();
+		ParkourArena arena = ParkourCore.getInstance().getArenaManager().get(name);
 		ParkourMakerArena makerArena = new ParkourMakerArena(arena.getName());
 		
 		makerArena.setSpawn(arena.getSpawn());
 		makerArena.setStart(arena.getStart());
 		makerArena.setEnd(arena.getEnd());
-		
+		makerArena.setLeaderboard(arena.getLeaderboard() != null ? arena.getLeaderboard().getLocation() : null);
 		makerArena.getCheckpoints().addAll( (List<Location>) ParkourCore.getInstance().
 				getConfigManager().getArena().getConfig().
 				getList(arena.getName().toLowerCase() + ".checkpoints", new ArrayList<>()));
@@ -107,11 +114,29 @@ public class ParkourMakerCommand implements CommandExecutor {
 			if(Permission.has(ParkourPermission.MAKER_HELP, player, true)) {
 				help(player);
 			}
+		} else if(args.length == 1) {
+			if(args[0].equalsIgnoreCase("build")) {
+				if(!ItemView.hasView(player.getUniqueId())) {
+					ItemView.setView(player, ParkourView.JOIN);
+				} else if(ItemView.isView(player.getUniqueId(), ParkourView.JOIN)) {
+					ItemView.restore(player);
+				} else {
+					Message.key(ParkourProperties.ERROR, sender);
+				}
+			} else {
+				help(player);
+			}
 		} else if(args.length == 2) {
 			if(args[0].equalsIgnoreCase("create") && Permission.has(ParkourPermission.MAKER_CREATE, player, true)) {
 				tryToCreate(player, args[1]);
 			} else if(args[0].equalsIgnoreCase("edit") && Permission.has(ParkourPermission.MAKER_EDIT, player, true)) {
 				tryToEdit(player, args[1]);
+			} else if(args[0].equalsIgnoreCase("npc")) { 
+				handleNPC(player, args[1]);
+			} else if(args[0].equalsIgnoreCase("set") && args[1].equalsIgnoreCase("leave")) {
+				ParkourCore.getInstance().getConfigManager().getArena().getConfig().set("leave", player.getLocation());
+				ParkourCore.getInstance().getConfigManager().getArena().saveConfig();
+				Message.key(ParkourProperties.MAKER_LEAVE_SET, player);
 			} else {
 				help(player);
 			}
@@ -119,6 +144,15 @@ public class ParkourMakerCommand implements CommandExecutor {
 			help(player);
 		}
 		return false;
+	}
+	
+	private void handleNPC(Player player, String skin) {
+		ParkourCore.getInstance().getMiscelaneousManager().getNPCManager().destroyNPCs();
+		FileConfiguration config = ParkourCore.getInstance().getConfigManager().getMiscelanousConfig().getConfig();
+		config.set("npcs.selector.location", player.getLocation());
+		config.set("npcs.selector.skin", skin);
+		ParkourCore.getInstance().getConfigManager().getMiscelanousConfig().saveConfig();
+		ParkourCore.getInstance().getMiscelaneousManager().getNPCManager().buildNPCs();
 	}
 
 }

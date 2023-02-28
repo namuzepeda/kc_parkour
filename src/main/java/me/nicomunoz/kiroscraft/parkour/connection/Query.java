@@ -86,7 +86,6 @@ public class Query {
 	}
 	
 	public boolean executeUpdate() throws SQLException {
-		System.out.println("TEST: " + this.query + " Values: " + Arrays.asList(data).toString());
 		PreparedStatement ps = getPreparedStatement(false);
 		return ps.executeUpdate() > 0;
 	}
@@ -106,10 +105,8 @@ public class Query {
 		else rs = getStatement().executeQuery(query);
 		
 		if(!rs.next()) {
-			System.out.println("[SQL][NULL] " + this.query + " - Values: " + Arrays.asList(data).toString());
 			return null;
 		}
-		System.out.println("[SQL] " + this.query + " - Values: " + Arrays.asList(data).toString());
 		return rs;
 	}
 }

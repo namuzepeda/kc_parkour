@@ -10,8 +10,10 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.arena.ParkourArenaManager;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.configs.ParkourConfigManager;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.economy.EconomyManager;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.ParkourGameManager;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourMode;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.ParkourMakerManager;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.commands.ParkourMakerCommand;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.miscelaneous.MiscelaneousManager;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ranks.RankManager;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.utils.ParkourProperties;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.ExtendedCore;
@@ -46,6 +48,7 @@ public class ParkourCore {
 	private ParkourMakerManager makerManager;
 	private ParkourArenaManager arenaManager;
 	private ParkourConfigManager configManager;
+	private MiscelaneousManager miscelaneousManager;
 	
 	private ParkourCore(Main main) {
 		this.main = main;
@@ -57,13 +60,17 @@ public class ParkourCore {
 		this.configManager = new ParkourConfigManager();
 		this.economyManager = new EconomyManager();
 		this.rankManager = new RankManager();
+		this.miscelaneousManager = new MiscelaneousManager();
 		this.arenaManager = new ParkourArenaManager();
 		this.gameManager = new ParkourGameManager();
 		this.makerManager = new ParkourMakerManager();
 		
 		ExtendedCore.newInstance().enable(main);
 		initializeCommands();
-		this.gameManager.getGamesInventory().update();
+		
+		for(ParkourMode mode : ParkourMode.values()) {
+			this.gameManager.getModeInventory(mode).update();
+		}
 	}
 	
 	private synchronized void initDB() {
@@ -105,6 +112,10 @@ public class ParkourCore {
 	
 	public RankManager getRankManager() {
 		return this.rankManager;
+	}
+	
+	public MiscelaneousManager getMiscelaneousManager() {
+		return this.miscelaneousManager;
 	}
 
 }

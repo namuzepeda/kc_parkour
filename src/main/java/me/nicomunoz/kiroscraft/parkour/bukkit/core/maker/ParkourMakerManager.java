@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
-import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.ModeSelectorInventory;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.extended.inventories.EditorModeSelectorInventory;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.listeners.ParkourMakerListener;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.listeners.ParkourMakerPlayerListener;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.player.ParkourMakerPlayerManager;
@@ -12,13 +12,13 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.player.ParkourMakerPlay
 public class ParkourMakerManager {
 	
 	private ParkourMakerPlayerManager playerManager;
-	private ModeSelectorInventory modeSelectorInventory;
+	private EditorModeSelectorInventory modeSelectorInventory;
 	
 	private Listener[] listeners = { new ParkourMakerListener(), new ParkourMakerPlayerListener() };
 	
 	public ParkourMakerManager() {
 		this.playerManager = new ParkourMakerPlayerManager();
-		this.modeSelectorInventory = new ModeSelectorInventory();
+		this.modeSelectorInventory = new EditorModeSelectorInventory();
 		
 		for(Listener listener : listeners) {
 			Bukkit.getPluginManager().registerEvents(listener, ParkourCore.getInstance().getMain());
@@ -29,7 +29,7 @@ public class ParkourMakerManager {
 		return this.playerManager;
 	}
 	
-	public ModeSelectorInventory getModeSelectorInventory() {
+	public EditorModeSelectorInventory getModeSelectorInventory() {
 		return this.modeSelectorInventory;
 	}
 

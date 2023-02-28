@@ -11,6 +11,8 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.ParkourGame;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.player.ParkourPlayer;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourMode;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.utils.ParkourProperties;
+import me.nicomunoz.kiroscraft.parkour.bukkit.utils.Config;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -34,8 +36,8 @@ public class ParkourTimer extends BukkitRunnable {
 				ParkourPlayer parkourPlayer = playerIterator.next();
 				if(parkourPlayer.getStart() != null) {
 					Player player = parkourPlayer.getPlayer();
-					double diff = getDateDiff(parkourPlayer.getStart(), time, TimeUnit.MILLISECONDS) * 0.001;
-					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText("§aTiempo: §e" + String.format("%.3f", diff)));
+					double diff = (time.getTime() - parkourPlayer.getStart().getTime()) * 0.001;
+					player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(Config.asString(ParkourProperties.ACTIONBAR_FORMAT, "%time", String.format("%.3f", diff))));
 				}
 			}
 		}

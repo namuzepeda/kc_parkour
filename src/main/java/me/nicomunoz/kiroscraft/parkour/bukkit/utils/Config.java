@@ -1,6 +1,7 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.utils;
 
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.ParkourCore;
+import me.nicomunoz.kiroscraft.parkour.shared.utils.StringUtils;
 
 public class Config {
 	
@@ -10,6 +11,10 @@ public class Config {
 	
 	public static short asShort(String key) {
 		return Short.parseShort(value(key));
+	}
+	
+	public static String asString(String key, String... replaces) {
+		return StringUtils.replace(value(key), replaces);
 	}
 	
 	public static String asString(String key) {
@@ -22,7 +27,6 @@ public class Config {
 		
 	public static boolean asBoolean(String key) {
 		String value = value(key);
-		System.out.println(value);
 		return Boolean.valueOf(value);
 	}
 	

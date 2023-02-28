@@ -29,6 +29,10 @@ public enum ParkourView implements ItemViewImpl {
 					ParkourItem.MAKER_CHECKPOINT_REMOVE
 			),
 			new ItemViewElement(
+					6,
+					ParkourItem.MAKER_LEADERBOARD
+			),
+			new ItemViewElement(
 					7,
 					ParkourItem.MAKER_CANCEL
 			),

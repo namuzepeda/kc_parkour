@@ -29,6 +29,10 @@ public class ItemView {
 		}
 	}
 	
+	public static boolean isView(UUID uuid, ItemViewImpl view) {
+		return hasView(uuid) && players.get(uuid).getView() == view;
+	}
+	
 	public static boolean hasView(UUID uuid) {
 		return players.get(uuid) != null;
 	}

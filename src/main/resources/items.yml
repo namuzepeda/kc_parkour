@@ -50,6 +50,11 @@ maker:
       name: "&cRemover checkpoint"
       lore:
        - "&7Click derecho para remover checkpoint"
+  leaderboard:
+    type: GOLDEN_SWORD
+    name: "&eTop Corredores"
+    lore:
+     - "&7Click derecho para setear top"
        
        
 game:

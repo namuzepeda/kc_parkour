@@ -1,5 +1,6 @@
 package me.nicomunoz.kiroscraft.parkour.bukkit.core.game.listeners;
 
+import java.sql.SQLException;
 import java.util.Date;
 
 import org.bukkit.Bukkit;
@@ -11,6 +12,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -26,17 +29,55 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayer
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayerJoinEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.events.ParkourGamePlayerStartEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.player.ParkourPlayer;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourGameUtils;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourMode;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.game.utils.ParkourState;
 import me.nicomunoz.kiroscraft.parkour.bukkit.utils.extended.items.view.ItemView;
+import me.nicomunoz.kiroscraft.parkour.connection.BukkitQuery;
 
 public class ParkourGamePlayerListener implements Listener {
+	
+	@EventHandler
+	public void onDamageEvent(EntityDamageEvent event) {
+		event.setCancelled(event.getEntity() instanceof Player);
+		if(event.isCancelled()) {
+			if(event.getCause() == DamageCause.FALL) {
+				Player player = (Player) event.getEntity();
+				ParkourPlayer parkourPlayer = ParkourCore.getInstance().getGameManager().getPlayerManager().getPlayer(player);
+				if(parkourPlayer != null) {
+					ParkourGame game = parkourPlayer.getGame();
+					if(game != null) {
+						if(game.getArena().getMode() == ParkourMode.DROPPER) {
+							if(parkourPlayer.getCheckpoint() != null)
+								player.teleport(parkourPlayer.getCheckpoint().getLocation());
+							else
+								player.teleport(game.getArena().getStart());
+						}
+					}
+				}
+			}
+		}
+		
+	}
 	
 	@EventHandler
 	public void onPlayerQuitEvent(PlayerQuitEvent event) {
 		ParkourPlayer parkourPlayer = ParkourCore.getInstance().getGameManager().getPlayerManager().getPlayer(event.getPlayer());
 		if(parkourPlayer != null) {
-			if(parkourPlayer.getGame() != null)
+			ParkourGame game = parkourPlayer.getGame();
+			if(game != null)
+			{
+				if(game.getArena().getMode() == ParkourMode.FREE) {
+					Bukkit.getScheduler().runTaskAsynchronously(ParkourCore.getInstance().getMain(), () -> {
+						try {
+							ParkourGameUtils.insertOrUpdateLocation(event.getPlayer().getLocation(), game.getArena(), event.getPlayer().getName());
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+					});
+				}
 				parkourPlayer.getGame().getPlayers().remove(parkourPlayer);
+			}
 			ParkourCore.getInstance().getGameManager().getPlayerManager().deleteInstance(event.getPlayer());	
 		}
 	}
@@ -59,7 +100,8 @@ public class ParkourGamePlayerListener implements Listener {
 	@EventHandler
 	public void onBlockPlaceEvent(BlockPlaceEvent event) {
 		ParkourPlayer parkourPlayer = ParkourCore.getInstance().getGameManager().getPlayerManager().getPlayer(event.getPlayer());
-		event.setCancelled(parkourPlayer.getGame() != null);
+		if(parkourPlayer != null)
+			event.setCancelled(parkourPlayer.getGame() != null);
 	}
 	
 	@EventHandler

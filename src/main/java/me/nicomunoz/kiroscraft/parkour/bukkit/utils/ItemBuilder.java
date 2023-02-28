@@ -368,7 +368,7 @@ public class ItemBuilder {
      * @return the current instance for chainable application
      * @since 1.0
      */
-    public ItemBuilder skullOwner(final String name){
+    public ItemBuilder skullOwner(final String name) {
         if(make().getType() == Material.PLAYER_HEAD && make().getDurability() == (byte) 3){
             SkullMeta skullMeta = (SkullMeta) meta();
             skullMeta.setOwner(name);

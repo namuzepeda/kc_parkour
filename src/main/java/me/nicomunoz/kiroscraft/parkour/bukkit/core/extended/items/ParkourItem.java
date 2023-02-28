@@ -17,6 +17,7 @@ import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCanc
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCheckpointAddEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerCheckpointRemoveEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerEndEvent;
+import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerLeaderboardEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSaveEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerSpawnEvent;
 import me.nicomunoz.kiroscraft.parkour.bukkit.core.maker.events.ParkourMakerStartEvent;
@@ -129,6 +130,23 @@ public enum ParkourItem implements ItemImpl {
 				
 			}
 	),
+	MAKER_LEADERBOARD(
+		"maker.leaderboard",
+		new ClickAction() {
+			
+			@Override
+			public void execute(PlayerInteractEvent event) {
+				if(event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+					ParkourMakerPlayer makerPlayer = ParkourCore.getInstance().getMakerManager().getPlayerManager().getPlayer(event.getPlayer());
+					if(makerPlayer != null) {
+						ParkourMakerLeaderboardEvent leaderboardEvent = new ParkourMakerLeaderboardEvent(event.getPlayer(), event.getPlayer().getLocation());
+						Bukkit.getServer().getPluginManager().callEvent(leaderboardEvent);
+					}
+				}
+			}
+			
+		}
+	),
 	MAKER_SAVE(
 			"maker.save",
 			new ClickAction() {
@@ -199,7 +217,7 @@ public enum ParkourItem implements ItemImpl {
 				
 				@Override
 				public void execute(Player player) {
-					player.openInventory(ParkourCore.getInstance().getGameManager().getGamesInventory().getInventory());
+					player.openInventory(ParkourCore.getInstance().getGameManager().getModeSelectorInventory().getInventory());
 				}
 				
 			}

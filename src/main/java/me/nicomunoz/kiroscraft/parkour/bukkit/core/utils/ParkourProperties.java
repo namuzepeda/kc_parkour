@@ -16,7 +16,15 @@ public class ParkourProperties extends PropertiesHandler {
 	public static String NOT_PLAYER = "not_player";
 	public static String NOT_PERMISSION = "not_permission";
 	
+	public static String NPC_SELECTOR_NAME = "npc.selector.name";
 	
+	public static String HOLO_LEADERBOARD_TOP = "holo.leaderboard.top";
+	public static String HOLO_LEADERBOARD_BOTTOM = "holo.leaderboard.bottom";
+	public static String HOLO_LEADERBOARD_FORMAT = "holo.leaderboard.format";
+	public static String HOLO_LEADERBOARD_DEFAULT_PLAYER = "holo.leaderboard.default.player";
+	public static String HOLO_LEADERBOARD_DEFAULT_TIME = "holo.leaderboard.default.time";
+	
+	public static String MAKER_NPC_SET = "maker.npc.set";
 	public static String MAKER_NOT_EXIST = "maker.event.edit.not_exist";
 	public static String MAKER_ALREADY_EXISTS = "maker.event.create.already_exists";
 	public static String MAKER_EVENT_CREATE = "maker.event.create";
@@ -27,6 +35,7 @@ public class ParkourProperties extends PropertiesHandler {
 	public static String MAKER_EVENT_EDIT_SET_START = "maker.event.edit.set.start";
 	public static String MAKER_EVENT_EDIT_SET_END = "maker.event.edit.set.end";
 	public static String MAKER_EVENT_EDIT_SET_SPAWN = "maker.event.edit.set.spawn";
+	public static String MAKER_EVENT_EDIT_SET_LEADERBOARD = "maker.event.edit.set.leaderboard";
 	public static String MAKER_EVENT_EDIT_ADD_CHECKPOINT = "maker.event.edit.add.checkpoint";
 	public static String MAKER_EVENT_EDIT_REMOVE_CHECKPOINT = "maker.event.edit.remove.checkpoint";
 	public static String MAKER_EVENT_EDIT_CONTAINS_CHECKPOINT = "maker.event.edit.contains.checkpoint";
@@ -35,6 +44,7 @@ public class ParkourProperties extends PropertiesHandler {
 	public static String MAKER_EVENT_EDIT_CANNOT_IF_START_END = "maker.event.edit.cannot_if_end_start";
 	public static String MAKER_EVENT_EDIT_CANNOT_IF_PLAYERS = "maker.event.edit.cannot_if_players";
 	public static String MAKER_EVENT_EDIT_DONE = "maker.event.edit.done";
+	public static String MAKER_LEAVE_SET = "maker.leave.set";
 	
 	public static String RANK_SHOP_NO_MONEY = "rank.shop.no_money";
 	public static String RANK_SHOP_ALREADY_BOUGHT = "rank.shop.already_bought";
@@ -66,5 +76,6 @@ public class ParkourProperties extends PropertiesHandler {
 	public static String CONFIG_FORCE_EDIT = "parkour.edit.force_if_players";
 	
 	public static String ACTIONBAR_TIMER_UPDATE = "actionbar_timer.update_time";
+	public static String ACTIONBAR_FORMAT = "actionbar_timer.format";
 
 }

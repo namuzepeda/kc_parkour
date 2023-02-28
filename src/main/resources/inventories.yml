@@ -1,3 +1,29 @@
+modes:
+  title: §0Seleccionar modo
+  size: 27
+  free_mode:
+    slot: 11
+    item:
+      type: SLIME_BLOCK
+      name: §bModo libre
+      lore:
+       - §eClick para seleccionar
+  competitive_mode:
+    slot: 13
+    item:
+      type: HONEY_BLOCK
+      name: §6Modo competitivo
+      lore:
+       - §eClick para seleccionar
+  dropper_mode:
+    slot: 15
+    item:
+      type: HONEYCOMB_BLOCK
+      name: §3Modo dropper
+      lore:
+       - §eClick para seleccionar
+
+
 games:
   title: §0Arenas
   size: 27

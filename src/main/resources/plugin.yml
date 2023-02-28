@@ -4,5 +4,6 @@ version: 1.0
 author: XelfeGamer
 description: ""
 api-version: 1.19
+depend: [ProtocolLib]
 commands:
   pmaker:
